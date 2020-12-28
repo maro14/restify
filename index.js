@@ -21,13 +21,29 @@ server.use(restify.plugins.bodyParser())
 //    res.send('Hello')
 //})
 
-//server.get("/json", function(req, res) {
-//    res.header('Content-Type', 200)
-//    res.json({hello: 'world'})
-//})
+server.get("/json", function(req, res) {
+    res.send(200)
+   res.json({hello: 'world'})
+})
 
+server.post('/user', (req, res, next) => {
+    const { name, age, phone, address } = req.body;
+    const user = new user({
+        name,
+        age,
+        phone,
+        address
+    })
+    try {
+        const newUser = await user.save();
+        res.send(201)
+        next()
+    } catch(err) {
+        return next(err, "Nothing happen")
+    }
+})
 
-server.get("/user", function(req, res, next) {
+server.get("/user", (req, res, next) => {
     res.setHeader("Content-Type", "application/json")
     const users = user.find({})
     res.send(users)
