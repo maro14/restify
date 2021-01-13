@@ -1,7 +1,7 @@
 var restify = require('restify');
 const config = require('./config/config.js');
 const mongoose = require('mongoose');
-const user = require('./models/user.js');
+const User = require('./models/user.js');
 
 const server = restify.createServer({
     name: "restapi for customer",
@@ -30,17 +30,14 @@ server.get("/json", (req, res) => {
 })
 
 server.post('/user', (req, res, next) => {
-    const { name, age, phone, address } = req.body;
-    const user = new user({
-        name,
-        age,
-        phone,
-        address
+    const { name } = req.body;
+    const user = new User({
+        name
     })
     try {
         const newUser = user.save();
         res.send(201)
-        next()
+        next(newUser)
     } catch(err) {
         return next(err, "Nothing happen")
     }
